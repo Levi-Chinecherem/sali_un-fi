@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sali AI Sustainability Dashboard 2023 - BTG Pactual Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <style>
+        /* Your original styles unchanged */
+        body { 
+            background: linear-gradient(135deg, #e6f3e6, #f0f7f0); 
+            font-family: 'Poppins', sans-serif; 
+            min-height: 100vh;
+            color: #2d3748;
+        }
+        .header-gradient { background: linear-gradient(90deg, #28a745, #4caf50); }
+        .container { max-width: 1200px; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+        .section-grid { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 2rem; 
+            max-width: 1000px; 
+            margin: 0 auto; 
+        }
+        .section-bg { 
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border-top: 4px solid #28a745;
+        }
+        .section-bg:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 700px; 
+            margin: 0 auto; 
+            padding: 1rem; 
+            background: white; 
+            border-radius: 1rem; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
+            overflow: hidden; 
+        }
+        .chart-canvas { width: 100% !important; height: auto !important; max-height: 400px; }
+        .metric-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 1rem; 
+            margin-top: 1.5rem;
+        }
+        .metric-item { 
+            background-color: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+            transition: all 0.2s ease;
+            border-left: 3px solid #28a745;
+        }
+        .metric-item:hover {
+            background-color: #f0f9f0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+        }
+        .insight-box { 
+            background: linear-gradient(to right, #ebf7eb, #f0fff0);
+            padding: 1rem 1.25rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid #28a745;
+            margin-top: 1rem;
+            font-weight: 500;
+            color: #2f855a;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        .insight-box i {
+            margin-right: 0.5rem;
+        }
+        h2 { 
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #2f855a; 
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #28a745, #4caf50);
+            border-radius: 3px;
+        }
+        .icon { 
+            color: #28a745;
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #81e088;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: #a7f3b0;
+            font-weight: 600;
+        }
+        .nav-link.active::after {
+            width: 100%;
+            background-color: #a7f3b0;
+        }
+        .logo-pulse {
+            animation: gentle-pulse 2s infinite;
+        }
+        @keyframes gentle-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .metric-value {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #28a745;
+        }
+        .metric-label {
+            font-weight: 500;
+            color: #4b5563;
+        }
+        .section-intro {
+            font-size: 1.05rem;
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-style: italic; /* To distinguish Sali AI's voice */
+        }
+        .download-btn {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(90deg, #28a745, #4caf50);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+        .download-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.6s ease;
+        }
+        .download-btn:hover::after {
+            left: 100%;
+        }
+        .table-container { 
+            overflow-x: auto; 
+            margin-top: 1rem; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.04); 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            background: #fff; 
+            border-radius: 0.75rem; 
+            overflow: hidden; 
+        }
+        th, td { 
+            padding: 1rem; 
+            text-align: left; 
+        }
+        thead tr { 
+            background: #f0f9f0; 
+            color: #2f855a; 
+            font-weight: 600; 
+        }
+        tbody tr { 
+            border-bottom: 1px solid #e5e7eb; 
+        }
+        tbody tr:last-child { 
+            border-bottom: none; 
+        }
+        @media (min-width: 768px) { 
+            .section-grid { grid-template-columns: 1fr; }
+            .section-bg { padding: 2rem; }
+        }
+        @media (max-width: 640px) { 
+            .chart-container { max-width: 100%; padding: 0.5rem; }
+            .metric-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+            .metric-item { padding: 1rem; }
+            h2 { font-size: 1.5rem; }
+            .insight-box { padding: 1rem; font-size: 0.9rem; }
+        }
+        @media (max-width: 480px) { 
+            .chart-canvas { max-height: 300px; }
+            header h1 { font-size: 2rem; }
+            header p { font-size: 1rem; }
+            .section-grid { gap: 1.5rem; }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <!-- Header -->
+    <header class="header-gradient text-white py-6 shadow-lg animate__animated animate__fadeInDown sticky top-0 z-10">
+        <div class="container flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center mb-4 md:mb-0">
+                <div class="text-left">
+                    <h1 class="text-2xl md:text-3xl font-bold">Sali AI Sustainability Dashboard</h1>
+                    <p class="text-sm md:text-base font-light">BTG Pactual 2023 Analysis</p>
+                </div>
+            </div>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="index.html" class="hover:text-green-200 transition duration-300">Home</a></li>
+                    <li><a href="v1.html" class="nav-link hover:text-green-200 transition duration-300">Version 1</a></li>
+                    <li><a href="v2.html" class="nav-link hover:text-green-200 transition duration-300">Version 2</a></li>
+                    <li><a href="v3.html" class="nav-link active">Version 3</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <header class="header-gradient text-white py-10 shadow-xl animate__animated animate__fadeInDown">
+        <div class="container">
+            <div class="text-center">
+                <img src="https://via.placeholder.com/120x60?text=Sali+AI" alt="Sali AI Logo" class="inline-block mb-4 logo-pulse">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-3">BTG Pactual 2023 Analysis</h1>
+                <p class="text-xl font-light max-w-2xl mx-auto">Sali AI’s Review of ESG Excellence</p>
+                <div class="mt-6 inline-block px-4 py-2 bg-white bg-opacity-20 rounded-lg">
+                    <span class="font-medium">Version 3: Comprehensive ESG Insights</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Quick Stats Banner -->
+    <div class="container -mt-6 z-10 relative">
+        <div class="bg-white rounded-xl shadow-lg p-4 flex flex-wrap justify-around items-center">
+            <div class="text-center p-2">
+                <div class="text-green-600 text-2xl font-bold">6,575</div>
+                <div class="text-gray-600 text-sm">Employees</div>
+            </div>
+            <div class="text-center p-2">
+                <div class="text-green-600 text-2xl font-bold">20.5%</div>
+                <div class="text-gray-600 text-sm">Women in Leadership</div>
+            </div>
+            <div class="text-center p-2">
+                <div class="text-green-600 text-2xl font-bold">2050</div>
+                <div class="text-gray-600 text-sm">Net-Zero Target</div>
+            </div>
+            <div class="text-center p-2">
+                <div class="text-green-600 text-2xl font-bold">100%</div>
+                <div class="text-gray-600 text-sm">ESG Compliance</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container py-12">
+        <div class="section-grid">
+            <!-- 1. Materiality Assessment -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-check-circle icon"></i> Materiality Assessment</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s identification of 13 material topics demonstrates a robust stakeholder-driven process, aligning with GRI standards and reflecting key ESG priorities like biodiversity and diversity.</p>
+                <div class="chart-container">
+                    <canvas id="materialityChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Material Topics</div>
+                        <div class="metric-value">13</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Stakeholder Events</div>
+                        <div class="metric-value">Multiple</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Review Cycle</div>
+                        <div class="metric-value">Biennial</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Frameworks</div>
+                        <div class="metric-value">IFRS S1, GRI, SASB</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Double Materiality</div>
+                        <div class="metric-value">Applied</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">GRI Compliance</div>
+                        <div class="metric-value">Yes</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Risk Analysis</div>
+                        <div class="metric-value">Included</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">External Input</div>
+                        <div class="metric-value">Yes</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">Topics like Biodiversity and Diversity were prioritized by the ESG Committee with stakeholder input.</p>
+                <div class="insight-box"><i class="fas fa-lightbulb"></i> "13 topics reflect stakeholder priorities."</div>
+            </section>
+
+            <!-- 2. Sustainability Strategy -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-leaf icon"></i> Sustainability Strategy</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s 2050 net-zero target and SDG-aligned investments show a forward-thinking strategy, though tangible outcomes depend on consistent execution over the 10-50 year horizon.</p>
+                <div class="chart-container">
+                    <canvas id="climateChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Climate Target</div>
+                        <div class="metric-value">2050</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Green Investments</div>
+                        <div class="metric-value">Allocated</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">SDG Integration</div>
+                        <div class="metric-value">Yes</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Sectors Funded</div>
+                        <div class="metric-value">Renewables, Biofuels</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Decarbonization</div>
+                        <div class="metric-value">Opportunity</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">ESG Risk Mgmt</div>
+                        <div class="metric-value">Effective</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Long-Term Goal</div>
+                        <div class="metric-value">10-50 Years</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">Encouraging sustainable practices in investee companies with a 2050 net-zero focus.</p>
+                <div class="insight-box"><i class="fas fa-rocket"></i> "10-50 year strategy drives sustainability."</div>
+            </section>
+
+            <!-- 3. Company Overview -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-building icon"></i> Company Overview</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s presence in 11 countries and meritocratic model provide a strong foundation for ESG integration, leveraging its Latin American influence effectively.</p>
+                <div class="chart-container">
+                    <canvas id="companyChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Name</div>
+                        <div class="metric-value">BTG Pactual</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">HQ Country</div>
+                        <div class="metric-value">Brazil</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">HQ Region</div>
+                        <div class="metric-value">Latin America</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Ultimate Parent</div>
+                        <div class="metric-value">BTG Pactual Group</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Is Public</div>
+                        <div class="metric-value">True</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Countries</div>
+                        <div class="metric-value">11</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Model</div>
+                        <div class="metric-value">Meritocratic</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">Employees from 11 countries align with sustainability goals.</p>
+                <div class="insight-box"><i class="fas fa-globe"></i> "11 countries show global reach."</div>
+            </section>
+
+            <!-- 4. Governance Structure -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-users-cog icon"></i> Governance Structure</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s ESGMS and 20 public policies indicate a mature governance framework, though diversity at 20.5% suggests room for improvement in leadership inclusivity.</p>
+                <div class="chart-container">
+                    <canvas id="governanceChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Board Diversity</div>
+                        <div class="metric-value">20.5%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Sustainability Committee</div>
+                        <div class="metric-value">Yes</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Risk Management</div>
+                        <div class="metric-value">Integrated</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Public Policies</div>
+                        <div class="metric-value">20</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Committees</div>
+                        <div class="metric-value">Multiple</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">PRSAC Compliance</div>
+                        <div class="metric-value">100%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Training</div>
+                        <div class="metric-value">Provided</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Noncompliance</div>
+                        <div class="metric-value">None</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">Board oversees ESGMS with Risk and Audit Committees; no significant noncompliance in 2023.</p>
+                <div class="insight-box"><i class="fas fa-shield-alt"></i> "20 policies ensure transparency."</div>
+            </section>
+
+            <!-- 5. Management Approach -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-cogs icon"></i> Management Approach</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s use of GRI 3-3 and periodic monitoring for 13 topics reflects a systematic approach, though deeper metrics on risk mitigation would strengthen credibility.</p>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Topic</th><th>Approach</th></tr></thead>
+                        <tbody>
+                            <tr><td>Biodiversity</td><td>Risk Assessment</td></tr>
+                            <tr><td>Data Security</td><td>Management</td></tr>
+                            <tr><td>Sustainable Finance</td><td>Procedures</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Risk Categories</div>
+                        <div class="metric-value">Medium</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Due Diligence</div>
+                        <div class="metric-value">Pre-Acquisition</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Monitoring</div>
+                        <div class="metric-value">Periodic</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">GRI Standard</div>
+                        <div class="metric-value">3-3</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">Processes address socio-environmental risks effectively.</p>
+                <div class="insight-box"><i class="fas fa-check-circle"></i> "Periodic monitoring strengthens ESG."</div>
+            </section>
+
+            <!-- 6. Environmental Impact -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-globe-americas icon"></i> Environmental Impact</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s environmental impact assessments for real estate are commendable, but lack of quantitative emissions data limits a full evaluation of their 2050 goals.</p>
+                <div class="chart-container">
+                    <canvas id="envChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Physical Risks</div>
+                        <div class="metric-value">Assessed</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Transition Risks</div>
+                        <div class="metric-value">Assessed</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Decarbonization</div>
+                        <div class="metric-value">Targeted</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Impact Assessments</div>
+                        <div class="metric-value">Yes</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Repair Processes</div>
+                        <div class="metric-value">In Place</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">Biodiversity risks are a key focus with mitigation strategies.</p>
+                <div class="insight-box"><i class="fas fa-solar-panel"></i> "Assessments drive sustainability."</div>
+            </section>
+
+            <!-- 7. Employee Data -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-user-friends icon"></i> Employee Data</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s workforce of 6,575, with 303 remote hires, shows adaptability, though incomplete gender data by region hampers a full diversity assessment.</p>
+                <div class="chart-container">
+                    <canvas id="employeeChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Total Employees</div>
+                        <div class="metric-value">6,575</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">New Hires</div>
+                        <div class="metric-value">1,450</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Remote Hires</div>
+                        <div class="metric-value">303</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Turnover Rate</div>
+                        <div class="metric-value">Tracked</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Gender Pay Ratio</div>
+                        <div class="metric-value">96%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Performance Reviews</div>
+                        <div class="metric-value">100%</div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Region</th><th>Men</th><th>Women</th></tr></thead>
+                        <tbody>
+                            <tr><td>Brazil</td><td>Tracked</td><td>Tracked</td></tr>
+                            <tr><td>Chile</td><td>Tracked</td><td>Tracked</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-4 text-gray-600">Gender and region tracked; 100% received performance assessments.</p>
+                <div class="insight-box"><i class="fas fa-users"></i> "303 remote hires boost flexibility."</div>
+            </section>
+
+            <!-- 8. Diversity & Inclusion -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-users icon"></i> Diversity & Inclusion</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s 20.5% women in leadership and 100% bias training are notable, yet the 7% female exec rate indicates a gap in top-tier inclusivity.</p>
+                <div class="chart-container">
+                    <canvas id="diversityChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Women in Leadership</div>
+                        <div class="metric-value">20.5%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Female Execs</div>
+                        <div class="metric-value">7%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Affirmative Hires</div>
+                        <div class="metric-value">Increased</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Bias Training</div>
+                        <div class="metric-value">100%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Diversity Policy</div>
+                        <div class="metric-value">Yes</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Gender Equity</div>
+                        <div class="metric-value">Ensured</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">Unconscious bias training is mandatory, supporting inclusion goals.</p>
+                <div class="insight-box"><i class="fas fa-handshake"></i> "20.5% women leaders drive equity."</div>
+            </section>
+
+            <!-- 9. Social Performance -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-users icon"></i> Social Performance</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s zero accidents and 96% gender pay ratio highlight strong social performance, though broader community impact metrics would enhance transparency.</p>
+                <div class="chart-container">
+                    <canvas id="socialChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Women in Leadership</div>
+                        <div class="metric-value">20.5%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Gender Pay Gap</div>
+                        <div class="metric-value">96%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Accidents</div>
+                        <div class="metric-value">0</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Social Investment</div>
+                        <div class="metric-value">Managed</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">CBA Coverage</div>
+                        <div class="metric-value">100%</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">100% workforce covered by collective agreements enhances social impact.</p>
+                <div class="insight-box"><i class="fas fa-heart"></i> "Zero accidents prioritize safety."</div>
+            </section>
+
+            <!-- 10. Employee Training -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-graduation-cap icon"></i> Employee Training</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s 88% anti-corruption training reach and 379 completions via 18 modules signal a solid commitment, though broader ESG training coverage could be expanded.</p>
+                <div class="chart-container">
+                    <canvas id="trainingChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Academy Modules</div>
+                        <div class="metric-value">18</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Leaders Trained</div>
+                        <div class="metric-value">300+</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Anti-Corruption</div>
+                        <div class="metric-value">88%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Bias Training</div>
+                        <div class="metric-value">100%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Employees Trained</div>
+                        <div class="metric-value">379</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">Training covers financial markets, ESG, and compliance.</p>
+                <div class="insight-box"><i class="fas fa-book"></i> "300+ leaders trained in 2023."</div>
+            </section>
+
+            <!-- 11. Occupational Health & Safety -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-medkit icon"></i> Occupational Health & Safety</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s zero incidents and 100% health coverage reflect a top-tier safety system, setting a high standard for employee well-being.</p>
+                <div class="chart-container">
+                    <canvas id="safetyChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Safety Policy</div>
+                        <div class="metric-value">Yes</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Incidents</div>
+                        <div class="metric-value">0</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Safety Training</div>
+                        <div class="metric-value">Provided</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Health Coverage</div>
+                        <div class="metric-value">100%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Fatalities</div>
+                        <div class="metric-value">0</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">No work-related fatalities; safety training ongoing.</p>
+                <div class="insight-box"><i class="fas fa-shield-alt"></i> "100% coverage ensures safety."</div>
+            </section>
+
+            <!-- 12. Human Rights -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-hands-helping icon"></i> Human Rights</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s 100% contract clauses and zero supplier violations align with UN standards, showcasing a strong human rights stance with no reported lapses.</p>
+                <div class="chart-container">
+                    <canvas id="humanRightsChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">HR Policy</div>
+                        <div class="metric-value">Yes</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Supplier Violations</div>
+                        <div class="metric-value">0</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Contract Clauses</div>
+                        <div class="metric-value">100%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Media Checks</div>
+                        <div class="metric-value">Negative-Free</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">UN Alignment</div>
+                        <div class="metric-value">Yes</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">No negative media on slave/child labor; suppliers monitored.</p>
+                <div class="insight-box"><i class="fas fa-handshake"></i> "100% clauses uphold rights."</div>
+            </section>
+
+            <!-- 13. Worker Rights & Agreements -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-handshake icon"></i> Worker Rights & Agreements</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s 100% CBA coverage and guaranteed freedom of association exceed basic labor standards, fostering a fair and transparent workplace.</p>
+                <div class="chart-container">
+                    <canvas id="workerRightsChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">CBA Coverage</div>
+                        <div class="metric-value">100%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Union Transparency</div>
+                        <div class="metric-value">Full</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Freedom of Assoc.</div>
+                        <div class="metric-value">Guaranteed</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">CLT Compliance</div>
+                        <div class="metric-value">Yes</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Union Dialogue</div>
+                        <div class="metric-value">Open</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">Open dialogue with trade unions ensures fairness.</p>
+                <div class="insight-box"><i class="fas fa-users"></i> "100% CBA supports worker rights."</div>
+            </section>
+
+            <!-- 14. Anti-Fraud & Anti-Corruption -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-shield-alt icon"></i> Anti-Fraud & Anti-Corruption</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s 88% training reach and zero corruption cases via My Compliance platform indicate a proactive stance, though full coverage remains a goal.</p>
+                <div class="chart-container">
+                    <canvas id="antiCorruptionChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Policy</div>
+                        <div class="metric-value">Yes</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Training Reach</div>
+                        <div class="metric-value">88%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Corruption Cases</div>
+                        <div class="metric-value">0</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Partner Awareness</div>
+                        <div class="metric-value">100%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">My Compliance</div>
+                        <div class="metric-value">Active</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">No cases reported via My Compliance platform.</p>
+                <div class="insight-box"><i class="fas fa-balance-scale"></i> "88% training enhances integrity."</div>
+            </section>
+
+            <!-- 15. Risk & Compliance -->
+            <section class="section-bg animate__animated animate__fadeIn">
+                <h2><i class="fas fa-balance-scale icon"></i> Risk & Compliance</h2>
+                <p class="section-intro">Sali AI Review: BTG Pactual’s periodic risk assessments and high-risk focus are robust, yet integrating more specific mitigation outcomes could elevate their compliance profile.</p>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Risk Type</th><th>Severity</th></tr></thead>
+                        <tbody>
+                            <tr><td>Physical Risks</td><td class="text-red-600">High</td></tr>
+                            <tr><td>Transition Risks</td><td class="text-yellow-600">Medium</td></tr>
+                            <tr><td>Corruption</td><td class="text-green-600">Low</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Anti-Corruption Policy</div>
+                        <div class="metric-value">Yes</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Training</div>
+                        <div class="metric-value">88%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Risk Assessments</div>
+                        <div class="metric-value">Periodic</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Corruption Incidents</div>
+                        <div class="metric-value">0</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Mitigation</div>
+                        <div class="metric-value">Active</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">Periodic assessments and mitigation opportunities monitored.</p>
+                <div class="insight-box"><i class="fas fa-check-circle"></i> "Periodic checks reduce risks."</div>
+            </section>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center mt-12 mb-6">
+            <div class="bg-white p-8 rounded-xl shadow-md max-w-2xl mx-auto">
+                <h3 class="text-2xl font-bold text-green-700 mb-3">Explore Sali AI’s Full Analysis</h3>
+                <p class="text-gray-600 mb-6">Download our detailed review of BTG Pactual’s 2023 sustainability report for deeper insights.</p>
+                <button class="download-btn text-white py-3 px-8 rounded-full text-lg font-semibold flex items-center mx-auto">
+                    <i class="fas fa-file-download mr-2"></i> Download Full Report
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-green-800 to-green-900 text-white py-8">
+        <div class="container">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">About Sali AI</h3>
+                    <p class="text-green-100 text-sm">Empowering sustainability insights through advanced AI analysis.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Contact</h3>
+                    <p class="text-green-100 text-sm">support@sali.ai<br>+1 555-123-4567</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Follow Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-green-200 hover:text-white transition duration-300"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-green-200 hover:text-white transition duration-300"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-green-200 hover:text-white transition duration-300"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-green-700 pt-6 text-center">
+                <p>© 2023 Sali AI Sustainability Dashboard. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chart.js Scripts -->
+    <script>
+        // Materiality Chart
+        new Chart(document.getElementById('materialityChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Biodiversity', 'Diversity', 'Social Investment', 'Data Security', 'Sustainable Finance', 'Risk Mgmt', 'Innovation'],
+                datasets: [{ 
+                    label: 'Priority', 
+                    data: [90, 85, 80, 75, 70, 65, 60],
+                    backgroundColor: 'rgba(76, 175, 80, 0.8)', 
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10 
+                }]
+            },
+            options: { 
+                indexAxis: 'y', 
+                plugins: { 
+                    title: { 
+                        display: true, 
+                        text: 'Materiality Priorities (13 Topics)',
+                        font: { size: 16, weight: 'bold' }
+                    }
+                }, 
+                scales: { 
+                    x: { beginAtZero: true, max: 100, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    y: { grid: { display: false } }
+                }, 
+                animation: { duration: 1500, easing: 'easeOutBounce' },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Climate Chart
+        new Chart(document.getElementById('climateChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: ['2023', '2050'],
+                datasets: [{ 
+                    label: 'Net-Zero Goal', 
+                    data: [0, 100], 
+                    borderColor: 'rgba(40, 167, 69, 1)', 
+                    backgroundColor: 'rgba(40, 167, 69, 0.2)', 
+                    fill: true,
+                    tension: 0.2,
+                    pointBackgroundColor: 'rgba(40, 167, 69, 1)',
+                    pointBorderColor: '#fff',
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: { 
+                plugins: { 
+                    title: { 
+                        display: true, 
+                        text: 'Road to 2050',
+                        font: { size: 16, weight: 'bold' }
+                    } 
+                }, 
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                        ticks: { callback: function(value) { return value + '%'; } }
+                    },
+                    x: { grid: { display: false } }
+                },
+                animation: { duration: 2000, easing: 'easeInOutQuad' },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Company Chart
+        new Chart(document.getElementById('companyChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Countries', 'Employees'],
+                datasets: [{ 
+                    label: 'Reach', 
+                    data: [11, 6575], 
+                    backgroundColor: 'rgba(76, 175, 80, 0.8)', 
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10 
+                }]
+            },
+            options: { 
+                plugins: { 
+                    title: { 
+                        display: true, 
+                        text: 'Global Presence',
+                        font: { size: 16, weight: 'bold' }
+                    }
+                }, 
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    x: { grid: { display: false } }
+                }, 
+                animation: { duration: 1500, easing: 'easeOutBounce' },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Governance Chart
+        new Chart(document.getElementById('governanceChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Female Board', 'Male Board'],
+                datasets: [{ 
+                    data: [20.5, 79.5], 
+                    backgroundColor: ['rgba(76, 175, 80, 0.8)', 'rgba(209, 213, 219, 0.8)'], 
+                    borderColor: ['rgba(40, 167, 69, 1)', 'rgba(190, 195, 200, 1)'],
+                    borderWidth: 1,
+                    hoverOffset: 4
+                }]
+            },
+            options: { 
+                plugins: { 
+                    title: { 
+                        display: true, 
+                        text: 'Board Diversity (20.5% Female)',
+                        font: { size: 16, weight: 'bold' }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) { return context.label + ': ' + context.raw + '%'; }
+                        }
+                    }
+                }, 
+                animation: { animateRotate: true, duration: 1500 },
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%'
+            }
+        });
+
+        // Environmental Chart
+        new Chart(document.getElementById('envChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Physical Risks', 'Transition Risks', 'Decarbonization'],
+                datasets: [{ 
+                    label: 'Impact', 
+                    data: [80, 60, 50],
+                    backgroundColor: [
+                        'rgba(76, 175, 80, 0.7)',
+                        'rgba(76, 175, 80, 0.6)',
+                        'rgba(76, 175, 80, 0.5)'
+                    ],
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1,
+                    borderRadius: 8 
+                }]
+            },
+            options: { 
+                plugins: { 
+                    title: { 
+                        display: true, 
+                        text: 'Environmental Metrics',
+                        font: { size: 16, weight: 'bold' }
+                    } 
+                }, 
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    x: { grid: { display: false } }
+                }, 
+                animation: { duration: 1500, easing: 'easeOutQuart' },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Employee Chart
+        new Chart(document.getElementById('employeeChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Total', 'New Hires', 'Remote'],
+                datasets: [{ 
+                    label: 'Employees', 
+                    data: [6575, 1450, 303], 
+                    backgroundColor: 'rgba(76, 175, 80, 0.8)', 
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10 
+                }]
+            },
+            options: { 
+                plugins: { 
+                    title: { 
+                        display: true, 
+                        text: 'Workforce Stats (2023)',
+                        font: { size: 16, weight: 'bold' }
+                    } 
+                }, 
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    x: { grid: { display: false } }
+                }, 
+                animation: { duration: 1500, easing: 'easeOutBounce' },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Diversity Chart
+        new Chart(document.getElementById('diversityChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Women Leaders (%)', 'Female Execs (%)', 'Pay Ratio (%)'],
+                datasets: [{ 
+                    label: 'Diversity', 
+                    data: [20.5, 7, 96], 
+                    backgroundColor: 'rgba(76, 175, 80, 0.8)', 
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10 
+                }]
+            },
+            options: { 
+                plugins: { 
+                    title: { 
+                        display: true, 
+                        text: 'Diversity Metrics (2023)',
+                        font: { size: 16, weight: 'bold' }
+                    } 
+                }, 
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    x: { grid: { display: false } }
+                }, 
+                animation: { duration: 1500, easing: 'easeOutBounce' },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Social Chart
+        new Chart(document.getElementById('socialChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Women Leaders (%)', 'Pay Ratio (%)', 'Accidents'],
+                datasets: [{ 
+                    label: 'Social Stats', 
+                    data: [20.5, 96, 0], 
+                    backgroundColor: 'rgba(76, 175, 80, 0.8)', 
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10 
+                }]
+            },
+            options: { 
+                plugins: { 
+                    title: { 
+                        display: true, 
+                        text: 'Social Performance (2023)',
+                        font: { size: 16, weight: 'bold' }
+                    } 
+                }, 
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    x: { grid: { display: false } }
+                }, 
+                animation: { duration: 1500, easing: 'easeOutBounce' },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Training Chart
+        new Chart(document.getElementById('trainingChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Modules', 'Leaders Trained', 'Anti-Corruption (%)'],
+                datasets: [{ 
+                    label: 'Training', 
+                    data: [18, 300, 88], 
+                    backgroundColor: 'rgba(76, 175, 80, 0.8)', 
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10 
+                }]
+            },
+            options: { 
+                plugins: { 
+                    title: { 
+                        display: true, 
+                        text: 'Training Impact (2023)',
+                        font: { size: 16, weight: 'bold' }
+                    } 
+                }, 
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    x: { grid: { display: false } }
+                }, 
+                animation: { duration: 1500, easing: 'easeOutBounce' },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Safety Chart
+        new Chart(document.getElementById('safetyChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Incidents', 'Health Coverage (%)', 'Fatalities'],
+                datasets: [{ 
+                    label: 'Safety Metrics', 
+                    data: [0, 100, 0], 
+                    backgroundColor: 'rgba(76, 175, 80, 0.8)', 
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10 
+                }]
+            },
+            options: { 
+                plugins: { 
+                    title: { 
+                        display: true, 
+                        text: 'Safety Commitment (2023)',
+                        font: { size: 16, weight: 'bold' }
+                    } 
+                }, 
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    x: { grid: { display: false } }
+                }, 
+                animation: { duration: 1500, easing: 'easeOutBounce' },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Human Rights Chart
+        new Chart(document.getElementById('humanRightsChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Supplier Violations', 'Contract Clauses (%)'],
+                datasets: [{ 
+                    label: 'Human Rights', 
+                    data: [0, 100], 
+                    backgroundColor: 'rgba(76, 175, 80, 0.8)', 
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10 
+                }]
+            },
+            options: { 
+                plugins: { 
+                    title: { 
+                        display: true, 
+                        text: 'Rights Metrics (2023)',
+                        font: { size: 16, weight: 'bold' }
+                    } 
+                }, 
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    x: { grid: { display: false } }
+                }, 
+                animation: { duration: 1500, easing: 'easeOutBounce' },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Worker Rights Chart
+        new Chart(document.getElementById('workerRightsChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['CBA Coverage (%)', 'Freedom of Assoc. (%)'],
+                datasets: [{ 
+                    label: 'Worker Rights', 
+                    data: [100, 100],
+                    backgroundColor: 'rgba(76, 175, 80, 0.8)', 
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10 
+                }]
+            },
+            options: { 
+                plugins: { 
+                    title: { 
+                        display: true, 
+                        text: 'Labor Metrics (2023)',
+                        font: { size: 16, weight: 'bold' }
+                    } 
+                }, 
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    x: { grid: { display: false } }
+                }, 
+                animation: { duration: 1500, easing: 'easeOutBounce' },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Anti-Corruption Chart
+        new Chart(document.getElementById('antiCorruptionChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Corruption Cases', 'Training Reach (%)', 'Partner Awareness (%)'],
+                datasets: [{ 
+                    label: 'Anti-Corruption', 
+                    data: [0, 88, 100], 
+                    backgroundColor: 'rgba(76, 175, 80, 0.8)', 
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10 
+                }]
+            },
+            options: { 
+                plugins: { 
+                    title: { 
+                        display: true, 
+                        text: 'Integrity Metrics (2023)',
+                        font: { size: 16, weight: 'bold' }
+                    } 
+                }, 
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    x: { grid: { display: false } }
+                }, 
+                animation: { duration: 1500, easing: 'easeOutBounce' },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+</body>
+</html>
